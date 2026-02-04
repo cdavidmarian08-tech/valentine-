@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Valentine 💘</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      height: 100%;
+      width: 100%;
+      text-align: center;
+      background: linear-gradient(135deg, #ffb6c1, #ffe4ec);
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent; /* elimină highlight pe iOS */
+    }
+
+    h1 {
+      color: #b30047;
+      margin-top: 20px;
+      font-size: 5vw;
+      min-font-size: 20px;
+    }
+
+    img {
+      width: 45vw;
+      max-width: 200px;
+      border-radius: 20px;
+      margin-top: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      height: auto;
+    }
+
+    #yes, #no {
+      position: absolute;
+      padding: 3vw 5vw;
+      font-size: 4vw;
+      min-font-size: 16px;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      z-index: 2;
+      touch-action: manipulation;
+    }
+
+    #yes {
+      background: #ff4d6d;
+      color: white;
+      font-weight: bold;
+      transform: translate(-50%, -50%);
+      transition: transform 0.3s ease;
+      z-index: 2;
+    }
+
+    #no {
+      background: #e0e0e0;
+      color: #000;
+      z-index: 1;
+    }
+
+    @media (min-width: 600px) {
+      #yes, #no { font-size: 20px; padding: 16px 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <img src="nu.jpg" alt="Poza cu inimioare">
+  <h1>Do you want to be my Valentine? 🥺💖</h1>
+
+  <button id="yes">DA 💘</button>
+  <button id="no">NU 😢</button>
+
+  <script>
+    const yesBtn = document.getElementById("yes");
+    const noBtn = document.getElementById("no");
+
+    let scaleYes = 1;
+
+    // poziționăm butonul NU inițial
+    moveNoSafely();
+
+    window.addEventListener('resize', moveNoSafely);
+    window.addEventListener('orientationchange', () => setTimeout(moveNoSafely, 200));
+
+    function moveNoSafely() {
+      const padding = 12;
+      const minDistance = 140;
+
+      if (!document.body.contains(yesBtn) || !document.body.contains(noBtn)) return;
+
+      const yesRect = yesBtn.getBoundingClientRect();
+      let x, y, distance;
+      const maxX = Math.max(0, window.innerWidth - noBtn.offsetWidth - padding);
+      const maxY = Math.max(0, window.innerHeight - noBtn.offsetHeight - padding);
+
+      let attempts = 0;
+      do {
+        x = Math.random() * maxX;
+        y = Math.random() * maxY;
+
+        const noCenterX = x + noBtn.offsetWidth / 2;
+        const noCenterY = y + noBtn.offsetHeight / 2;
+        const yesCenterX = yesRect.left + yesRect.width / 2;
+        const yesCenterY = yesRect.top + yesRect.height / 2;
+
+        distance = Math.hypot(noCenterX - yesCenterX, noCenterY - yesCenterY);
+        attempts++;
+        if (attempts > 100) break;
+      } while (distance < minDistance);
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+    }
+
+    // butonul NU fuge pe mobil și desktop
+    noBtn.addEventListener("pointerenter", growYesAndMoveNo);
+    noBtn.addEventListener("touchstart", growYesAndMoveNo, {passive: true});
+
+    function growYesAndMoveNo() {
+      moveNoSafely();
+      scaleYes = Math.min(2.5, scaleYes + 0.12);
+      yesBtn.style.transform = `translate(-50%, -50%) scale(${scaleYes})`;
+    }
+
+    // când apăsăm DA
+    yesBtn.addEventListener("click", () => {
+      document.body.innerHTML = `
+        <h1 style="color:#ff1a75; font-size:12vw; margin-top:40vh;">
+          Stiam eu  💖💖💖
+        </h1>
+      `;
+    });
+  </script>
+
+</body>
+</html>
+
